@@ -40,9 +40,20 @@ export class ProfileService {
 
   async toggleVerified(wallet: string) {
     const profile = await this.profileModel.findOne({ wallet }).exec();
+    console.log(profile)
     profile.verified = !profile.verified;
     await this.nftModel
       .updateMany({ artist: profile.wallet }, { curated: profile.verified })
+      .exec();
+    await profile.save();
+  }
+
+  async toggleArtist(wallet: string) {
+    const profile = await this.profileModel.findOne({ wallet }).exec();
+    console.log(profile)
+    profile.artist = !profile.artist;
+    await this.nftModel
+      .updateMany({ artist: profile.wallet }, { curated: profile.artist })
       .exec();
     await profile.save();
   }

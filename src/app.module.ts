@@ -6,6 +6,7 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
 import { config } from 'dotenv';
 config();
 const MONGODB_URI = process.env.MONGODB_URI;
+console.log(MONGODB_URI)
 @Module({
   imports: [
     MongooseModule.forRoot(`${MONGODB_URI}/test?authSource=admin`, {
