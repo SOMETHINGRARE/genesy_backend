@@ -95,19 +95,20 @@ export class NftService {
     order: string,
     page: number,
     pageSize: number,
-    owner: string[],
+    wallet: string,
   ) {
     const sort: any = {
       mintedAt: -1,
     };
     // if (order === '1') sort.curated = 1;
     // console.log('sort', sort, order);
-    if (order === '1')
+    if (order === '1') {
+      const profile = await this.profileModel.findOne({ wallet }).exec();
       return await this.nftModel
         .find({
           $expr: { $eq: ['$artist', '$owner'] },
           price: { $gt: 0 },
-          owner: { $in: owner },
+          owner: { $in: profile.friends },
           // curated: true,
         })
         .sort(sort)
@@ -115,6 +116,8 @@ export class NftService {
         .limit(pageSize)
         .lean()
         .exec();
+    }
+      
     return await this.nftModel
       .find({ $expr: { $eq: ['$artist', '$owner'] }, price: { $gt: 0 } })
       .sort(sort)

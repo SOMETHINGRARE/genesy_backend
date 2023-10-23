@@ -39,14 +39,14 @@ export class NftController {
   async getNftItemsByUser(@Param('wallet') wallet: string) {
     return await this.service.getNftItemsByUser(wallet);
   }
-  @Get('primary/:order/:page/:pageSize')
+  @Get('primary/:order/:page/:pageSize/:wallet?')
   async getPrimaryItems(
     @Param('order') order: string,
     @Param('page') page: number,
     @Param('pageSize') pageSize: number,
-    @Query('owner') owner: string[],
+    @Param('wallet') wallet?: string,
   ) {
-    return await this.service.getPrimaryItems(order, page, pageSize, owner);
+    return await this.service.getPrimaryItems(order, page, pageSize, wallet);
   }
 
   @Get('peers/:artist/:wallet')
