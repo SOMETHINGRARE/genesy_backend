@@ -24,6 +24,19 @@ export class ProfileService {
     return await this.profileModel.findOne({ wallet }).lean().exec();
   }
 
+  async getFriends(wallet: string): Promise<string[]> {
+    try {
+      const profile = await this.profileModel.findOne({ wallet }).exec();
+      if (profile) {
+        return profile.friends;
+      }
+      return [];
+    } catch (error) {
+      // Handle the error appropriately, e.g., log the error or return a default value.
+      return [];
+    }
+  }
+
   async updateProfile(wallet: string, updateProfileDto: UpdateProfileDto) {
     await this.profileModel
       .findOneAndUpdate({ wallet }, updateProfileDto, { upsert: true })

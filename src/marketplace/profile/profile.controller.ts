@@ -20,6 +20,12 @@ export class ProfileController {
   async getProfile(@Param('wallet') wallet: string) {
     return await this.service.getProfile(wallet);
   }
+
+  @Get('friends/:wallet')
+  async getFriends(@Param('wallet') wallet: string) {
+    return await this.service.getFriends(wallet);
+  }
+  
   @Put(':wallet')
   @ApiOperation({ description: 'https://prnt.sc/flV4MpfAuRW3' })
   async updateProfile(

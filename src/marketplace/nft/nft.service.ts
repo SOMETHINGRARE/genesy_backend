@@ -91,18 +91,24 @@ export class NftService {
     };
   }
 
-  async getPrimaryItems(order: string, page: number, pageSize: number) {
+  async getPrimaryItems(
+    order: string,
+    page: number,
+    pageSize: number,
+    owner: string[],
+  ) {
     const sort: any = {
       mintedAt: -1,
     };
-    if (order === '1') sort.curated = 1;
-    console.log('sort', sort, order);
+    // if (order === '1') sort.curated = 1;
+    // console.log('sort', sort, order);
     if (order === '1')
       return await this.nftModel
         .find({
           $expr: { $eq: ['$artist', '$owner'] },
           price: { $gt: 0 },
-          curated: true,
+          owner: { $in: owner },
+          // curated: true,
         })
         .sort(sort)
         .skip(page * pageSize)
