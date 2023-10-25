@@ -102,7 +102,7 @@ export class NftService {
     };
     // if (order === '1') sort.curated = 1;
     // console.log('sort', sort, order);
-    if (order === '1') {
+    if (order === '1' && wallet) {
       const profile = await this.profileModel.findOne({ wallet }).exec();
       return await this.nftModel
         .find({

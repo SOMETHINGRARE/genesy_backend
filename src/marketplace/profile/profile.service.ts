@@ -24,6 +24,25 @@ export class ProfileService {
     return await this.profileModel.findOne({ wallet }).lean().exec();
   }
 
+  async getProfileByUsernameOrWallet(
+    identifier: string,
+  ): Promise<Profile[] | null> {
+    try {
+      // Search for profiles where the username contains the identifier
+      const artists = await this.profileModel
+        .find({
+          $or: [
+            { username: { $regex: identifier, $options: 'i' } }, // Case-insensitive match for username
+            { wallet: { $regex: identifier, $options: 'i' } }, // Case-insensitive match for wallet
+          ],
+        })
+        .exec();
+      return artists;
+    } catch (error) {
+      throw new Error(`Error while getting the artists: ${error.message}`);
+    }
+  }
+
   async getFriends(wallet: string): Promise<string[]> {
     try {
       const profile = await this.profileModel.findOne({ wallet }).exec();
@@ -53,7 +72,6 @@ export class ProfileService {
 
   async toggleVerified(wallet: string) {
     const profile = await this.profileModel.findOne({ wallet }).exec();
-    console.log(profile)
     profile.verified = !profile.verified;
     await this.nftModel
       .updateMany({ artist: profile.wallet }, { curated: profile.verified })
@@ -63,7 +81,6 @@ export class ProfileService {
 
   async toggleArtist(wallet: string) {
     const profile = await this.profileModel.findOne({ wallet }).exec();
-    console.log(profile)
     profile.artist = !profile.artist;
     await this.nftModel
       .updateMany({ artist: profile.wallet }, { curated: profile.artist })
