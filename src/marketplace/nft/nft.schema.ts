@@ -18,6 +18,9 @@ export class Nft {
   imageLink: string;
 
   @Prop({ required: true })
+  thumbnailLink: string;
+
+  @Prop({ required: true })
   artist: string;
 
   @Prop({ required: true })

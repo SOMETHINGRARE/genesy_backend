@@ -2,6 +2,7 @@ export class BaseNftDto {
   name: string;
   description: string;
   imageLink: string;
+  thumbnailLink: string;
   artist: string;
   owner: string;
   price: number;
