@@ -103,11 +103,11 @@ export class NftService {
     // if (order === '1') sort.curated = 1;
     // console.log('sort', sort, order);
     if (order === '1' && wallet) {
+      // Step 1: Get user profile
       const profile = await this.profileModel.findOne({ wallet }).exec();
-      return await this.nftModel
+      // Step 1: Find all nfts that meet in user's friend list
+      const nfts = await this.nftModel
         .find({
-          $expr: { $eq: ['$artist', '$owner'] },
-          price: { $gt: 0 },
           owner: { $in: profile.friends },
           // curated: true,
         })
@@ -116,8 +116,26 @@ export class NftService {
         .limit(pageSize)
         .lean()
         .exec();
+
+      // Step 2: Get the list of under radar artists
+      const underRadarArtists = nfts.map((nft) => nft.artist);
+      const uniqueUnderRadarArtists = [...new Set(underRadarArtists)];
+
+      // Step 3: Find all nfts that owned by under radar artists
+      return await this.nftModel
+        .find({
+          $expr: { $eq: ['$artist', '$owner'] },
+          price: { $gt: 0 },
+          artist: { $in: uniqueUnderRadarArtists },
+          // curated: true,
+        })
+        .sort(sort)
+        .skip(page * pageSize)
+        .limit(pageSize)
+        .lean()
+        .exec();
     }
-      
+
     return await this.nftModel
       .find({ $expr: { $eq: ['$artist', '$owner'] }, price: { $gt: 0 } })
       .sort(sort)
