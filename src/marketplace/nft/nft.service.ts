@@ -106,7 +106,7 @@ export class NftService {
       const profile = await this.profileModel.findOne({ wallet }).exec();
       return await this.nftModel
         .find({
-          price: { $gt: 0 },
+          price: { $gte: 0 },
           owner: { $in: profile.friends },
           // curated: true,
         })
